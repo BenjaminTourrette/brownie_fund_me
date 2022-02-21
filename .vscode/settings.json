@@ -1,0 +1,35 @@
+{
+  "sync-rsync.shell": "ssh -p 2233",
+  "sync-rsync.remote": "beniben@51.210.101.238:/var/www/punkytigers/public_html/smartContract",
+  "sync-rsync.local": "/Users/beniben/Domaines_De_Vie/3_Carriere/Professionnel/Informatique/Learning/Cryptos/brownie_fund_me",
+  "sync-rsync.onSave": true,
+  "sync-rsync.onSaveIndividual": true,
+  "sync-rsync.executableShell": "/bin/bash",
+  "sync-rsync.exclude": [
+    ".vscode",
+    "awstats-icon",
+    "awstatsicons",
+
+    ".git",
+    ".gitignore",
+    ".well-known",
+    "icon",
+
+    "bootstrap",
+    "fonts",
+    "node_modules",
+    "storage",
+    "stats",
+    "vendor",
+    "tests"
+  ],
+  //"sync-rsync.chmod": "D2775,F664",
+  "sync-rsync.useWSL": true,
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "cmd": "ssh beniben@51.210.101.238 'cd /var/www/punkytigers/public_html; yarn build' "
+      }
+    ]
+  }
+}

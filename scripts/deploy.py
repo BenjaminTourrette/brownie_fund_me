@@ -1,28 +1,29 @@
 from brownie import FundMe, MockV3Aggregator, network, config
 #from scripts.helpful_scripts import get_account
-from scripts.helpful_scripts import deploy_mocks, get_account_, deploy_mocks
+from scripts.helpful_scripts import deploy_mocks, get_account_, deploy_mocks, LOCAL_BLOCKCHAIN_ENVIRONMENT, FORKED_LOCAL_ENVIRONMENT, pushContractAddressToApi
 
-DECIMALS = 18
-STARTING_PRICE = 2000
+
 
 def deploy_fund_me():
     account = get_account_()
-    
-    
     # if we are on persistant network use associated address 
     # if not deploy mocks
-    if network.show_active() != "development":
+    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENT:
+        print('active network : ', config['networks'][network.show_active()])
         price_feed_address = config['networks'][network.show_active()]['eth_usd_price_feed']
     else: 
         deploy_mocks()
         price_feed_address = MockV3Aggregator[-1].address
-        print("Deployed")
-        
+        #print("Deployed")
     
-    
-    fund_me = FundMe.deploy("0x8A753747A1Fa494EC906cE90E9f37563A8AF630e", 
+    fund_me = FundMe.deploy(price_feed_address, 
                             {"from" : account}, publish_source=config['networks'][network.show_active()].get("verify"))
     print(f"Contract deployed to {fund_me.address}")
+    
+    if network.show_active() != 'ganache-local' and network.show_active() not in FORKED_LOCAL_ENVIRONMENT :
+        print("Pushing to API ...")
+        pushContractAddressToApi(FundMe[-1])
+    return fund_me
     
     
 def store_value(value):
